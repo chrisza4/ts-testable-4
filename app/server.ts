@@ -8,10 +8,29 @@ const port = Config.port
 
 app.get('/', (req, res) => res.send('Hello world'))
 
+type CalcResult = {
+  result: number;
+}
 app.post('/calc', (req, res) => {
-  console.log('Body:', req.body)
   const { operator, secondNumber, firstNumber } = req.body
-  res.send("")
+  let result: CalcResult | null = null
+  switch (operator) {
+    case '+':
+      result = { result: firstNumber + secondNumber }
+      break
+    case '-':
+      result = { result: firstNumber - secondNumber }
+      break
+    case '*':
+      result = { result: firstNumber * secondNumber }
+      break
+    case '/':
+      result = { result: firstNumber / secondNumber }
+      break
+    default:
+      return res.status(422).send({ error: 'Invalid operator' })
+  }
+  res.json(result)
 })
 
 if (Config.NODE_ENV !== 'TEST')  {
