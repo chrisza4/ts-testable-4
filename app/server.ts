@@ -17,6 +17,33 @@ app.post('/', (req, res) => {
   })
 })
 
+app.post('/calc', (req, res) => {
+  const { operation, firstNumber, secondNumber } = req.body
+  switch (operation) {
+    case '+':
+      return res.json({
+        result: firstNumber + secondNumber
+      })
+    case '-':
+      return res.json({
+        result: firstNumber - secondNumber
+      })
+    case '*':
+      return res.json({
+        result: firstNumber * secondNumber
+      })
+    case '/':
+      return res.json({
+        result: firstNumber / secondNumber
+      })
+    default:
+      return res.status(422).json({
+        error: true,
+        message: 'Invalid operation'
+      })
+  }
+})
+
 if (Config.NODE_ENV !== 'TEST') {
   app.listen(port, () => console.log(`App listen to port ${Config.port}`))
 }
