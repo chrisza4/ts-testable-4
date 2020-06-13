@@ -5,7 +5,14 @@ export enum Operator {
   Divide = '/'
 }
 
-export function calculate(firstNumber: number, secondNumber: number, operator: Operator): number {
+type CalculateModel = {
+  firstNumber: number;
+  secondNumber: number;
+  operator: Operator;
+}
+
+export function calculate(input: CalculateModel): number {
+  const { operator, firstNumber, secondNumber } = input
   switch (operator) {
     case '+':
       return firstNumber + secondNumber

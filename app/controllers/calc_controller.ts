@@ -8,6 +8,6 @@ export function Calc(req: Express.Request, res: Express.Response<CalcView.CalcRe
     return res.status(422).send({ error: "Invalid operator" })
   }
 
-  const result = CalcModel.calculate(firstNumber, secondNumber, operator)
+  const result = CalcModel.calculate({ firstNumber, secondNumber, operator })
   return res.json(CalcView.calcResultView(result))
 }
