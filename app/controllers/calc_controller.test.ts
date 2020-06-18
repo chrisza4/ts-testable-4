@@ -56,7 +56,10 @@ describe('CalcController', () => {
       }), mockedResponse)
       const mockedResponseAsserter: MockedResponse = mockedResponse as unknown as MockedResponse
       expect(mockedResponseAsserter.getCode()).toEqual(422)
-      expect(mockedResponseAsserter.getSentPayload()).toEqual({ error: "Invalid operator" })
+      expect(mockedResponseAsserter.getSentPayload()).toEqual({
+        success: false,
+        errorMessage: 'Invalid operator'
+      })
     })
 
     it('Response with whatever Model say', () => {
@@ -69,7 +72,22 @@ describe('CalcController', () => {
       }), mockedResponse)
       const mockedResponseAsserter: MockedResponse = mockedResponse as unknown as MockedResponse
       expect(mockedResponseAsserter.getCode()).toEqual(200)
-      expect(mockedResponseAsserter.getSentPayload()).toEqual({ result: 5 })
+      expect(mockedResponseAsserter.getSentPayload()).toEqual({
+        success: true,
+        result: 5
+      })
+    })
+  })
+
+  describe('CalcController', () => {
+    it('Return error if operator is not valid', () => {
+      // ???
+      const actual = CalcController.CalcController({
+        firstNumber: 1,
+        secondNumber: 2,
+        operator: 'hahaha'
+      })
     })
   })
 })
+

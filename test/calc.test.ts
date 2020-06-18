@@ -17,6 +17,7 @@ describe('calc', () => {
       secondNumber: 4,
       operator: '#'
     }).expect(422)
-    expect(res.body.error).toEqual('Invalid operator')
+    expect(res.body.success).toBeFalsy()
+    expect(res.body.errorMessage).toEqual('Invalid operator')
   })
 })

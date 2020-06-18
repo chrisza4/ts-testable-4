@@ -1,13 +1,18 @@
 type CalcSuccessResult = {
+  success: true;
   result: number;
 }
 
 type ErrorResult = {
-  error: string;
+  success: false;
+  errorMessage: string;
 }
 
 export type CalcResult = ErrorResult | CalcSuccessResult
 
 export function calcResultView(result: number): CalcResult {
-  return { result }
+  return {
+    success: true,
+    result
+  }
 }
