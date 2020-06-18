@@ -1,6 +1,6 @@
-import * as Express from 'express'
 import * as CalcView from '../views/calc_view'
 import * as CalcModel from '../models/calc_model'
+import * as ControllerHelper from './controller_helper'
 
 export type CalcRequest = {
   operator: CalcModel.Operator;
@@ -8,29 +8,19 @@ export type CalcRequest = {
   secondNumber: number;
 }
 
-export function Calc(req: Express.Request, res: Express.Response<CalcView.CalcResult>): Express.Response<CalcView.CalcResult> {
-  const { operator, secondNumber, firstNumber } = req.body
-  if (!Object.values(CalcModel.Operator).includes(operator)) {
-    return res.status(422).send({
-      success: false,
-      errorMessage: 'Invalid operator'
-    })
+export async function CalcController(input: CalcRequest): Promise<CalcView.CalcResult> {
+  const { firstNumber, secondNumber, operator } = input
+  if (!Object.values(CalcModel.Operator).some(a => a === operator)) {
+    throw new ControllerHelper.ValidationError('Invalid operator')
   }
-
-  const result = CalcModel.calculate({ firstNumber, secondNumber, operator })
-  return res.json(CalcView.calcResultView(result))
-}
-
-// What we want
-export function CalcController(requestBody: any): CalcView.CalcResult {
-  const { operator, secondNumber, firstNumber } = requestBody
-  if (!Object.values(CalcModel.Operator).includes(operator)) {
-    return {
-      success: false,
-      errorMessage: 'Invalid operator'
-    }
+  if (typeof secondNumber !== 'number') {
+    throw new ControllerHelper.ValidationError('Invalid Number')
   }
-
+  if (typeof firstNumber !== 'number') {
+    throw new ControllerHelper.ValidationError('Invalid Number')
+  }
   const result = CalcModel.calculate({ firstNumber, secondNumber, operator })
   return CalcView.calcResultView(result)
 }
+
+export const Calc = ControllerHelper.createExpressHandler(CalcController)
