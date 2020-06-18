@@ -87,6 +87,23 @@ describe('CalcController', () => {
         secondNumber: 2,
         operator: 'hahaha'
       })
+      if (actual.success === true) {
+        return fail()
+      }
+      expect(actual.errorMessage).toEqual('Invalid operator')
+    })
+
+    it('Return result from model', () => {
+      MockedCalcModel.calculate.mockReturnValue(5)
+      const actual = CalcController.CalcController({
+        firstNumber: 1,
+        secondNumber: 2,
+        operator: '+'
+      })
+      if (!actual.success) {
+        return fail()
+      }
+      expect(actual.result).toEqual(5)
     })
   })
 })
