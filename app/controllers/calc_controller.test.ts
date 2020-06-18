@@ -3,7 +3,6 @@ import * as Express from 'express'
 import { mocked } from 'ts-jest/utils'
 import * as CalcModel from '../models/calc_model'
 import * as CalcController from './calc_controller'
-import { CalcResult } from '../views/calc_view'
 
 const MockedCalcModel = mocked(CalcModel)
 
@@ -47,9 +46,9 @@ type MockedResponse = {
 
 describe('CalcController', () => {
   describe('Calc', () => {
-    it('Return 422 if operator is not valid', () => {
+    it('Return 422 if operator is not valid', async () => {
       const mockedResponse = createMockedExpressResponse()
-      CalcController.Calc(createMockedExpressRequest({
+      await CalcController.Calc(createMockedExpressRequest({
         firstNumber: 1,
         secondNumber: 2,
         operator: 'hahaha'
@@ -62,16 +61,15 @@ describe('CalcController', () => {
       })
     })
 
-    it('Response with whatever Model say', () => {
+    it('Response with whatever Model say', async () => {
       MockedCalcModel.calculate.mockReturnValue(5)
       const mockedResponse = createMockedExpressResponse()
-      CalcController.Calc(createMockedExpressRequest({
+      await CalcController.Calc(createMockedExpressRequest({
         firstNumber: 1,
         secondNumber: 2,
         operator: '+'
       }), mockedResponse)
       const mockedResponseAsserter: MockedResponse = mockedResponse as unknown as MockedResponse
-      expect(mockedResponseAsserter.getCode()).toEqual(200)
       expect(mockedResponseAsserter.getSentPayload()).toEqual({
         success: true,
         result: 5
@@ -80,26 +78,15 @@ describe('CalcController', () => {
   })
 
   describe('CalcController', () => {
-    it('Return error if operator is not valid', () => {
-      // ???
-      const actual = CalcController.CalcController({
-        firstNumber: 1,
-        secondNumber: 2,
-        operator: 'hahaha'
-      })
-      if (actual.success === true) {
-        return fail()
-      }
-      expect(actual.errorMessage).toEqual('Invalid operator')
-    })
 
-    it('Return result from model', () => {
+    it('Return result from model', async () => {
       MockedCalcModel.calculate.mockReturnValue(5)
-      const actual = CalcController.CalcController({
+      const actual = await CalcController.CalcController({
         firstNumber: 1,
         secondNumber: 2,
-        operator: '+'
+        operator: CalcModel.Operator.Plus
       })
+      expect(actual.success).toBeTruthy()
       if (!actual.success) {
         return fail()
       }
