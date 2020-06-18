@@ -1,4 +1,5 @@
 import * as CalcModel from './calc_model'
+import * as CalcError from './calc_error'
 
 describe('Calc model', () => {
   it('can plus', () => {
@@ -35,5 +36,18 @@ describe('Calc model', () => {
       operator: CalcModel.Operator.Divide
     })
     expect(res).toEqual(2)
+  })
+
+  it('Throw on Divide by zero', () => {
+    try {
+      CalcModel.calculate({
+        firstNumber: 9,
+        secondNumber: 0,
+        operator: CalcModel.Operator.Divide
+      })
+      fail()
+    } catch (error) {
+      expect(error.name).toEqual('DivideByZeroError')
+    }
   })
 })
