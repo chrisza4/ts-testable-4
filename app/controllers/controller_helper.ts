@@ -1,4 +1,6 @@
 import * as Express from 'express'
+import * as ControllerError from './controller_error'
+
 export type Body = {[key: string]: string | number | undefined}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type QueryString = any
@@ -15,18 +17,6 @@ export type Controller<TIn, TOut> = {
   handler: (input: TIn) => Promise<TOut>;
 }
 
-type HttpError = {
-  statusCode: number;
-  errorMessage: string;
-}
-function errorMapper(err: Error): HttpError {
-  switch (err.name) {
-    case 'DivideByZeroError':
-      return { statusCode: 422, errorMessage: err.message }
-    default:
-      return { statusCode: 500, errorMessage: 'Internal error' }
-  }
-}
 
 export function createExpressHandler<TIn, TOut> (controller: Controller<TIn, TOut>): ExpressHandler {
   return async (req: Express.Request, res: Express.Response): Promise<unknown> => {
@@ -43,7 +33,7 @@ export function createExpressHandler<TIn, TOut> (controller: Controller<TIn, TOu
         ...result
       })
     } catch (error) {
-      const httpError = errorMapper(error)
+      const httpError = ControllerError.errorMapper(error)
       res.status(httpError.statusCode).json({ success: false, errorMessage: httpError.errorMessage })
     }
   }

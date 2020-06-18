@@ -79,4 +79,23 @@ describe('createExpressHandler', () => {
       result: 'myresult'
     })
   })
+
+  it('Handle internal error', async () => {
+    const validator: ControllerHelper.Validator<unknown> = (body, queryString, params) => 12
+    const handler = async (a: number): Promise<unknown> => {
+      throw Error('unknown')
+    }
+    const controller = {
+      validator, handler
+    }
+    const expressHandler = ControllerHelper.createExpressHandler(controller)
+    const expressResponse = createMockedExpressResponse()
+    await expressHandler(createMockedExpressRequest({}),  expressResponse)
+    const mockResponse = expressResponse as unknown as MockedResponse
+    expect(mockResponse.getCode()).toEqual(500)
+    expect(mockResponse.getSentPayload()).toEqual({
+      success: false,
+      errorMessage: 'Internal error'
+    })
+  })
 })
