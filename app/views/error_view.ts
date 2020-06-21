@@ -1,10 +1,10 @@
-import * as CalcError from '../models/calc_error'
+import * as ErrorView from '../models/calc_error'
 export type HttpError = {
   statusCode: number;
   errorMessage: string;
 }
 
-export function mapHttpError(err: Error): HttpError {
+export function errorView(err: Error): HttpError {
   const errorMapping = {
     'ValidationError': 422,
     'DivideByZeroError': 422

@@ -80,7 +80,7 @@ describe('createExpressHandler', () => {
     const response = await Supertest(app).post('/').send({ greetUser: 'Chris' })
     expect(response.status).toEqual(422)
     expect(response.body).toEqual({
-      error: true,
+      statusCode: 422,
       errorMessage: 'Invalid input'
     })
   })
@@ -97,7 +97,7 @@ describe('createExpressHandler', () => {
     const response = await Supertest(app).post('/').send({ greetUser: 'Chris' })
     expect(response.status).toEqual(500)
     expect(response.body).toEqual({
-      error: true,
+      statusCode: 500,
       errorMessage: 'Some random error'
     })
   })
