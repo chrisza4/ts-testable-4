@@ -1,6 +1,8 @@
 import * as Express from 'express'
 import Config from './config'
-import { calc, Operation } from './calc'
+import { calc } from './calc'
+import { numberValidate, operationValidate } from './validate'
+import { ValidateError } from './custom-error'
 
 const app = Express()
 
@@ -18,19 +20,21 @@ app.post('/', (req, res) => {
   })
 })
 
-app.post('/calc', (req, res) => {
-  const { operation, firstNumber, secondNumber } = req.body
-  const allowedOperations = Object.values(Operation)
-  if (!allowedOperations.includes(operation)) {
-    return res.status(422).json({
-      error: true,
-      message: 'Invalid operation'
-    })
+app.post('/calc', async (req, res) => {
+  try {
+    const { firstNumber, secondNumber, operation } = req.body
+    await numberValidate(firstNumber, secondNumber)
+    await operationValidate(operation)
+    const calResult = calc(firstNumber, secondNumber, operation)
+    res.send({ result: calResult })
+  } catch (err) {
+    if (err instanceof ValidateError) {
+      return res.status(err.statusCode).json({
+        message: err.message
+      })
+    }
+    res.status(500).json({ message: 'internal error' })
   }
-  const result = calc(firstNumber, secondNumber, operation)
-  return res.json({
-    result: result
-  })
 })
 
 if (Config.NODE_ENV !== 'TEST') {
