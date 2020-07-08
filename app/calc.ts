@@ -2,7 +2,8 @@ export enum Operation {
   Add = '+',
   Substract = '-',
   Multiply = '*',
-  Divide = '/'
+  Divide = '/',
+  Power = '^'
 }
 
 export function calc(firstNumber: number, secondNumber: number, operation: Operation): number {
@@ -13,6 +14,8 @@ export function calc(firstNumber: number, secondNumber: number, operation: Opera
       return firstNumber - secondNumber
     case '*':
       return firstNumber * secondNumber
+    case '^':
+    return firstNumber ** secondNumber
     case '/':
     default:
       return firstNumber / secondNumber
